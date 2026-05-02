@@ -28,6 +28,10 @@ public enum PathExpression: Expression, Hashable {
 public struct FilterExpression: Expression, CustomScimFilterStringConvertible, Hashable {
 	public var anyExpr: FilterAnyExpression
 	
+	public init(anyExpr: FilterAnyExpression) {
+		self.anyExpr = anyExpr
+	}
+	
 	public var scimFilterString: String {
 		return anyExpr.scimFilterString
 	}
@@ -36,6 +40,10 @@ public struct FilterExpression: Expression, CustomScimFilterStringConvertible, H
 public struct FilterAnyExpression: Expression, CustomScimFilterStringConvertible, Hashable {
 	public var anyExprs: [FilterAllExpression]
 	
+	public init(anyExprs: [FilterAllExpression]) {
+		self.anyExprs = anyExprs
+	}
+	
 	public var scimFilterString: String {
 		return anyExprs.map({ $0.scimFilterString }).joined(separator: " or ")
 	}
@@ -43,6 +51,10 @@ public struct FilterAnyExpression: Expression, CustomScimFilterStringConvertible
 
 public struct FilterAllExpression: Expression, CustomScimFilterStringConvertible, Hashable {
 	public var allExprs: [FilterValueExpression]
+	
+	public init(allExprs: [FilterValueExpression]) {
+		self.allExprs = allExprs
+	}
 	
 	public var scimFilterString: String {
 		return allExprs.map({ $0.scimFilterString }).joined(separator: " and ")
@@ -73,6 +85,11 @@ public struct ValuePathExpression: Expression, CustomScimFilterStringConvertible
 	public let attributePath: AttributePath
 	public let valueFilterExpression: ValueFilterExpression
 	
+	public init(attributePath: AttributePath, valueFilterExpression: ValueFilterExpression) {
+		self.attributePath = attributePath
+		self.valueFilterExpression = valueFilterExpression
+	}
+	
 	public var scimFilterString: String {
 		return "\(attributePath.scimFilterString)[\(valueFilterExpression.scimFilterString)]"
 	}
@@ -80,6 +97,10 @@ public struct ValuePathExpression: Expression, CustomScimFilterStringConvertible
 
 public struct ValueFilterExpression: Expression, CustomScimFilterStringConvertible, Hashable {
 	public var anyExpr: ValueFilterAnyExpression
+	
+	public init(anyExpr: ValueFilterAnyExpression) {
+		self.anyExpr = anyExpr
+	}
 	
 	public var scimFilterString: String {
 		return anyExpr.scimFilterString
@@ -89,6 +110,10 @@ public struct ValueFilterExpression: Expression, CustomScimFilterStringConvertib
 public struct ValueFilterAnyExpression: Expression, CustomScimFilterStringConvertible, Hashable {
 	public var anyExprs: [ValueFilterAllExpression]
 	
+	public init(anyExprs: [ValueFilterAllExpression]) {
+		self.anyExprs = anyExprs
+	}
+	
 	public var scimFilterString: String {
 		return anyExprs.map({ $0.scimFilterString }).joined(separator: " or ")
 	}
@@ -96,6 +121,10 @@ public struct ValueFilterAnyExpression: Expression, CustomScimFilterStringConver
 
 public struct ValueFilterAllExpression: Expression, CustomScimFilterStringConvertible, Hashable {
 	public var allExprs: [ValueFilterValueExpression]
+	
+	public init(allExprs: [ValueFilterValueExpression]) {
+		self.allExprs = allExprs
+	}
 	
 	public var scimFilterString: String {
 		return allExprs.map({ $0.scimFilterString }).joined(separator: " and ")
@@ -136,6 +165,10 @@ public enum AttributeExpression: Expression, CustomScimFilterStringConvertible, 
 public struct AttributePresentExpression: Expression, CustomScimFilterStringConvertible, Hashable {
 	public let attributePath: AttributePath
 	
+	public init(attributePath: AttributePath) {
+		self.attributePath = attributePath
+	}
+	
 	public var scimFilterString: String {
 		return "\(attributePath.scimFilterString) pr"
 	}
@@ -145,6 +178,12 @@ public struct AttributeComparisonExpression: Expression, CustomScimFilterStringC
 	public let attributePath: AttributePath
 	public let comparativeOperator: ComparativeOperator
 	public let comparativeValue: ComparativeValue
+	
+	public init(attributePath: AttributePath, comparativeOperator: ComparativeOperator, comparativeValue: ComparativeValue) {
+		self.attributePath = attributePath
+		self.comparativeOperator = comparativeOperator
+		self.comparativeValue = comparativeValue
+	}
 	
 	public var scimFilterString: String {
 		return "\(attributePath.scimFilterString) \(comparativeOperator.scimFilterString) \(comparativeValue.scimFilterString)"
@@ -194,6 +233,12 @@ public struct AttributePath: CustomScimFilterStringConvertible, Hashable {
 	public var schemaUrn: String? = nil
 	public let attributeName: String
 	public var subAttributeName: String? = nil
+	
+	public init(schemaUrn: String? = nil, attributeName: String, subAttributeName: String? = nil) {
+		self.schemaUrn = schemaUrn
+		self.attributeName = attributeName
+		self.subAttributeName = subAttributeName
+	}
 	
 	public var scimFilterString: String {
 		var result = attributeName
